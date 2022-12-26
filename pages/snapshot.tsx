@@ -1,20 +1,18 @@
 import Head from "next/head";
-import Link from "next/link";
+import SnapShot from "../app/Modules/Snapshot";
 
-export default function Home() {
+export default function Snapshot() {
   return (
     <>
       <Head>
-        <title>Dumbo Tests Web3</title>
-        <meta name="description" content="Testing Web3" />
+        <title>Dumbo Tests Web3 - Snapshot</title>
+        <meta name="description" content="Testing Web3 - Snapshot" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <Link href={'/snapshot'}>
-          Snapshot
-        </Link>
+        <SnapShot />
       </main>
     </>
   );
