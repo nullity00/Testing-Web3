@@ -1,11 +1,97 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "@next/font/google";
+import styles from "../styles/Home.module.css";
+import snapshot from "@snapshot-labs/snapshot.js";
+import { ethers } from "ethers";
 
-const inter = Inter({ subsets: ['latin'] })
+const hub = "https://testnet.snapshot.org";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const client = new snapshot.Client712(hub);
+
+  async function castVote() {
+    const window: any = globalThis;
+    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const signer = provider.getSigner();
+    const account = await signer.getAddress();
+
+    console.log(account);
+
+    const receipt = await client.vote(provider, account, {
+      space: "dumbo.eth",
+      proposal:
+        "0xadb8f2ed066682e83dedc7fdb929f81aab7edbb6f88e2a9075a3689250a88819",
+      type: "single-choice",
+      choice: 1,
+      reason: "Choice 1 make lot of sense",
+      app: "my-app",
+    });
+
+    console.log(receipt);
+  }
+
+  async function createProposal() {
+    const window: any = globalThis;
+    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const signer = provider.getSigner();
+    const account = await signer.getAddress();
+
+    console.log(account);
+    console.log(new Date().getTime(), new Date().getTime());
+
+    const receipt = await client.proposal(provider, account, {
+      space: "dumbo.eth",
+      type: "single-choice",
+      title: "Test proposal 5",
+      body: "This is the content of the proposal",
+      choices: ["Alice", "Bob", "Carol"],
+      start: Math.floor(new Date().getTime() / 1000),
+      end: Math.floor((new Date().getTime() + 7200000) / 1000),
+      snapshot: 16270668,
+      network: "5",
+      plugins: JSON.stringify({}),
+      app: "my-app",
+    } as any);
+
+    console.log(receipt);
+  }
+
+  async function calculateScores() {
+    const window: any = globalThis;
+    const provider = new ethers.providers.Web3Provider(window?.ethereum);
+    const signer = provider.getSigner();
+    const account = await signer.getAddress();
+
+    console.log(account);
+
+    const space = "dumbo.eth";
+    const strategies = [
+      {
+        name: "erc20-balance-of",
+        params: {
+          address: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
+          symbol: "LINK",
+          decimals: 18,
+        },
+      },
+    ] as any;
+    const network = "5";
+    const voters = [
+      "0xd9a51042eBE9A428e362B36F12Bd332bB565deEa",
+      "0xF06E4D857Fe806E5bEc7170cdE663496f0627251",
+    ];
+    const blockNumber = 8205426;
+
+    snapshot.utils
+      .getScores(space, strategies, network, voters, blockNumber)
+      .then((scores) => {
+        console.log("Scores", scores);
+      });
+  }
+
   return (
     <>
       <Head>
@@ -14,110 +100,13 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+      <main>
+        <h1 className={styles.title}>gvjhgv</h1>
+        <button onClick={castVote}>Cast Vote</button>
+        <button onClick={createProposal}>Create Proposal</button>
+        <button onClick={calculateScores}>Calculate scores</button>
       </main>
     </>
-  )
+  );
 }
