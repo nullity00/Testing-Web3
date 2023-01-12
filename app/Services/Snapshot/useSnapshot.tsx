@@ -5,24 +5,28 @@ export default function useSnapshot() {
   const hub = "https://testnet.snapshot.org";
   const client = new snapshot.Client712(hub);
 
-  const space = "dumbo.eth";
-
-  async function createProposal() {
+  async function createProposal(
+    space: string,
+    title: string,
+    body: string,
+    network: string
+  ) {
     const window: any = globalThis;
     const provider = new ethers.providers.Web3Provider(window?.ethereum);
     const signer = provider.getSigner();
     const account = await signer.getAddress();
+    const bk = await provider.getBlockNumber();
 
     const receipt = await client.proposal(provider, account, {
       space,
       type: "single-choice",
-      title: "Test proposal 5",
-      body: "This is the content of the proposal",
+      title,
+      body,
       choices: ["Yes", "No"],
       start: Math.floor(new Date().getTime() / 1000),
       end: Math.floor((new Date().getTime() + 7200000) / 1000),
-      snapshot: 16270668,
-      network: "5",
+      snapshot: bk - 1,
+      network: network,
       plugins: JSON.stringify({}),
       app: "testing-web3",
     } as any);
@@ -31,7 +35,11 @@ export default function useSnapshot() {
     return receipt;
   }
 
-  async function castVote(proposal: string, choice: number, reason: string) {
+  async function castVote(
+    space: string,
+    proposal: string,
+    choice: number,
+  ) {
     const window: any = globalThis;
     const provider = new ethers.providers.Web3Provider(window?.ethereum);
     const signer = provider.getSigner();
@@ -41,7 +49,7 @@ export default function useSnapshot() {
       proposal: proposal,
       type: "single-choice",
       choice: choice,
-      reason: reason,
+      reason: "Good one",
       app: "testing-web3",
     });
 
@@ -49,7 +57,11 @@ export default function useSnapshot() {
     return receipt;
   }
 
-  async function calculateScores(voters: string[], blockNumber: number) {
+  async function calculateScores(
+    space: string,
+    voters: string[],
+    blockNumber: number
+  ) {
     const strategies = [
       {
         name: "erc20-balance-of",

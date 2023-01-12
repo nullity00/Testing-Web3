@@ -1,7 +1,13 @@
 import Head from "next/head";
 import SnapShot from "../app/Modules/Snapshot";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 export default function Snapshot() {
+  const client = new ApolloClient({
+    uri: "https://testnet.snapshot.org/graphql",
+    cache: new InMemoryCache(),
+  });
+
   return (
     <>
       <Head>
@@ -12,7 +18,9 @@ export default function Snapshot() {
       </Head>
 
       <main>
-        <SnapShot />
+        <ApolloProvider client={client}>
+          <SnapShot />
+        </ApolloProvider>
       </main>
     </>
   );
