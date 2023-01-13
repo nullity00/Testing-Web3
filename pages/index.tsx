@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { protocols } from "./[protocol]";
 
 export default function Home() {
   return (
@@ -12,8 +13,13 @@ export default function Home() {
       </Head>
 
       <main>
-        <Link href={"/snapshot"}>Snapshot</Link>
-        <Link href={"/lighthouse"}>Lighthouse</Link>
+        {Object.values(protocols).map((protocol) => {
+          return (
+            <Link href={protocol.href} key={protocol.href}>
+              {protocol.title}
+            </Link>
+          );
+        })}
       </main>
     </>
   );
