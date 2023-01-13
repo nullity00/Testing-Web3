@@ -12,9 +12,8 @@ export default function Home() {
       </Head>
 
       <main>
-        <Link href={'/snapshot'}>
-          Snapshot
-        </Link>
+        <Link href={"/snapshot"}>Snapshot</Link>
+        <Link href={"/lighthouse"}>Lighthouse</Link>
       </main>
     </>
   );
