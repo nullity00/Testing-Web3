@@ -92,7 +92,7 @@ export default function SnapShot() {
         {snapshotSpace &&
           !isLoading &&
           (data?.space?.id ? (
-            <p style={{ color: "blue" }}>
+            <p style={{ color: "palegreen" }}>
               Snapshot Space - {data?.space?.name}
             </p>
           ) : (
@@ -159,17 +159,22 @@ export default function SnapShot() {
             setProp(e.target.value);
           }}
         />
-        {proposalData?.proposal?.id && (<div>
-          <p>Title - {proposalData.proposal.title} </p>
-          <p>State - {proposalData.proposal.state} </p>
-          <p>Snapshot - {proposalData.proposal.snapshot} </p>
-          <p>Scores by strategy - {proposalData.proposal.scores_by_strategy.map((strategy: string) => {
-            return (
-              <p key={strategy}>{strategy}</p>
-            )
-          })} </p>
-          <p>Scores total - {proposalData.proposal.scores_total} </p>
-          </div>)}
+        {proposalData?.proposal?.id && (
+          <div>
+            <p>Title - {proposalData.proposal.title} </p>
+            <p>State - {proposalData.proposal.state} </p>
+            <p>Snapshot - {proposalData.proposal.snapshot} </p>
+            <p>
+              Scores by strategy -{" "}
+              {proposalData.proposal.scores_by_strategy.map(
+                (strategy: string) => {
+                  return <p key={strategy}>{strategy}</p>;
+                }
+              )}{" "}
+            </p>
+            <p>Scores total - {proposalData.proposal.scores_total} </p>
+          </div>
+        )}
       </div>
     </div>
   );
