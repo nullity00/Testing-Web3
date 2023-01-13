@@ -1,7 +1,5 @@
 export interface Output {
-  Name: string;
-  Size: string;
-  Hash: string;
+  data: { Name: string; Size: string; Hash: string };
 }
 
 export interface ShareFileResponse {

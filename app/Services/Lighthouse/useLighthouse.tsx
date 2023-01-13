@@ -55,44 +55,66 @@ export default function useLighthouse() {
 
   const decrypt = async (cid: string) => {
     // Fetch file encryption key
-    const { publicKey, signedMessage } = await encryptionSignature();
-    console.log(signedMessage);
-    const keyObject: EncryptionKey = await lighthouse.fetchEncryptionKey(
-      cid,
-      publicKey,
-      signedMessage
-    );
-    /*
+    try {
+      const { publicKey, signedMessage } = await encryptionSignature();
+      console.log(signedMessage);
+      const keyObject: EncryptionKey = await lighthouse.fetchEncryptionKey(
+        cid,
+        publicKey,
+        signedMessage
+      );
+      /*
       decryptFile(cid, key, mimeType)
         Parameters:
           CID: CID of file to decrypt
           key: key to decrypt file
           mimeType: default null, mime type of file
     */
-    const fileType = "image/jpeg";
-    const decrypted: Blob = await lighthouse.decryptFile(
-      cid,
-      keyObject.data.key,
-      fileType
-    );
+      const decrypted = await lighthouse.decryptFile(
+        cid,
+        keyObject.data.key,
+        "image/png"
+      );
+      console.log(decrypted);
 
-    // View File
-    const url = URL.createObjectURL(decrypted);
-    console.log(url);
-    return url;
+      // View File
+      const url = URL.createObjectURL(decrypted);
+      console.log(url);
+      let file = await fetch(url)
+        .then((r) => r.blob())
+        .then(
+          (blobFile) =>
+            new File([blobFile], "fileNameGoesHere", { type: "image/png" })
+        );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file.name);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return url;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   };
 
   const shareFile = async (cid: string, publicKeyUserB: string[]) => {
     // Note: message should be signed by owner of file.
-    const { publicKey, signedMessage } = await encryptionSignature();
+    try {
+      const { publicKey, signedMessage } = await encryptionSignature();
 
-    const res: ShareFileResponse = await lighthouse.shareFile(
-      publicKey,
-      publicKeyUserB,
-      cid,
-      signedMessage
-    );
-    return res;
+      const res: ShareFileResponse = await lighthouse.shareFile(
+        publicKey,
+        publicKeyUserB,
+        cid,
+        signedMessage
+      );
+      return res;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   };
 
   const accessControl = async (cid: string) => {

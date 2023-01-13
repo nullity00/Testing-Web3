@@ -53,7 +53,9 @@ export default function SnapShot() {
         Snapshot is a protocol for creating and voting on proposals. It is a
         decentralized alternative to traditional governance systems.
       </p>
-      <a href="https://demo.snapshot.org">https://demo.snapshot.org</a>
+      <a href="https://demo.snapshot.org" target={"_blank"} rel="noreferrer">
+        https://demo.snapshot.org
+      </a>
       <div
         className="horizontal"
         style={{
